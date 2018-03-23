@@ -17,6 +17,10 @@ public class DriverCamera : MonoBehaviour {
     public GameObject center;
     public GameObject right;
 
+
+   
+
+
     public AdminScreen.DisplayType cameraSetup = AdminScreen.DisplayType.FLAT;
 
     public bool showControl = false;
@@ -24,6 +28,10 @@ public class DriverCamera : MonoBehaviour {
     public string playerCarLayer;
 
     private float angle;
+
+
+    public GameObject AdditionalCameras;
+
 
     public void Awake()
     {
@@ -51,8 +59,44 @@ public class DriverCamera : MonoBehaviour {
 
         SetNearClip(AdminSettings.Instance.camNearClip);
 
+       // AddAdditionalCameras();
+
+
+
     }
 
+    void AddAdditionalCameras()
+    {
+        Debug.Log("About To add additionalCameras");
+
+        if (transform.GetComponentInChildren<AdditionalCameraManager>() != null)
+        {
+            Debug.Log("Deleting the exsiting Cameras");
+            AdditionalCameraManager ac = transform.GetComponentInChildren<AdditionalCameraManager>();
+            ac.DestroThis();
+            Destroy(ac.transform.gameObject);
+
+        }
+      
+        GameObject AddCam = GameObject.Instantiate(AdditionalCameras);
+        AddCam.transform.position = transform.position;
+        AddCam.transform.rotation = transform.rotation;
+        AddCam.transform.parent = transform;
+
+        AddCam.GetComponent<AdditionalCameraManager>().updateMask(center.GetComponent<Camera>().cullingMask);
+        Debug.Log("Done! Cameras shouild be back up!");
+        ActivateAllDisplays(8);
+
+    }
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+
+            AddAdditionalCameras();
+
+        }
+    }
     public void SetCameraType(AdminScreen.DisplayType newType, float fov)
     {
         
@@ -66,6 +110,7 @@ public class DriverCamera : MonoBehaviour {
         left.GetComponent<Camera>().farClipPlane = farClip;
         center.GetComponent<Camera>().farClipPlane = farClip;
         right.GetComponent<Camera>().farClipPlane = farClip;
+       
     }
 
     public void SetNearClip(float nearClip)
@@ -73,6 +118,7 @@ public class DriverCamera : MonoBehaviour {
         left.GetComponent<Camera>().nearClipPlane = nearClip;
         right.GetComponent<Camera>().nearClipPlane = nearClip;
         center.GetComponent<Camera>().nearClipPlane = nearClip;
+      
     }
 
     public void SetFoV(float fov)
@@ -108,8 +154,8 @@ public class DriverCamera : MonoBehaviour {
         var lCam = left.GetComponent<Camera>();
         var cCam = center.GetComponent<Camera>();
         var rCam = right.GetComponent<Camera>();
-        
-        if(cameraSetup == AdminScreen.DisplayType.PARABOLIC)
+       
+        if (cameraSetup == AdminScreen.DisplayType.PARABOLIC)
         {
             lCam.enabled = false;
             rCam.enabled = false;
@@ -167,6 +213,8 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
+        GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+       
     }
 
     public void ViewThirdPerson()
@@ -177,6 +225,7 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
+        GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
     }
 
     public void SetCulingMask(int mask)
@@ -184,6 +233,8 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
+        GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+
     }
 
     public void SwitchView()
@@ -203,4 +254,21 @@ public class DriverCamera : MonoBehaviour {
         var fov = fovAtThreeScreens;
         return fov * 4 / 5 + (fov / 5) / 2 * (((float)Screen.width / Screen.height) / (16f / 9f) - 1);
     }
+
+
+    ///////EDITED By David Goedicke 20180111
+
+    public void ActivateAllDisplays(int max = 8)
+    {
+        for (int num = 0; num < max; num++)
+        {
+            if (Display.displays.Length > num)
+            {
+                Display.displays[num].Activate();
+            }
+        }
+
+    }
+
+    
 }

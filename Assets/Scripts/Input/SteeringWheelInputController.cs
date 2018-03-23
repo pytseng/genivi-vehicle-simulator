@@ -34,6 +34,7 @@ public class SteeringWheelInputController : InputController {
 
     private string brakeAxis;
     private string gasAxis;
+    private bool FWheel;
     private int minBrake;
     private int maxBrake;
     private int minGas;
@@ -90,6 +91,7 @@ public class SteeringWheelInputController : InputController {
         maxGas = AppController.Instance.appSettings.maxGas;
         gasAxis = AppController.Instance.appSettings.gasAxis;
         brakeAxis = AppController.Instance.appSettings.brakeAxis;
+        FWheel = AppController.Instance.appSettings.FantacWheel;
         FFBGain = AppController.Instance.appSettings.FFBMultiplier;
 
         
@@ -240,11 +242,15 @@ public class SteeringWheelInputController : InputController {
             DeviceState state =  DirectInputWrapper.GetStateManaged(wheelIndex);
             steerInput = state.lX / 32768f;
             accelInput = state.rglSlider[0] / -32768f;
-           /* x = state.lX;
-            y = state.lY;
-            z = state.lZ;
-            s0 = state.rglSlider[0];
-            s1 = state.rglSlider[1];*/
+
+           // Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
+
+
+            /* x = state.lX;
+             y = state.lY;
+             z = state.lZ;
+             s0 = state.rglSlider[0];
+             s1 = state.rglSlider[1];*/
             if (forceFeedbackPlaying)
             {
                 DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(constant * FFBGain));
@@ -253,43 +259,54 @@ public class SteeringWheelInputController : InputController {
             }
 
 
-            if(DirectInputWrapper.DevicesCount() > 1)
+            if(DirectInputWrapper.DevicesCount() > 1 || FWheel)
             {
-                DeviceState state2 = DirectInputWrapper.GetStateManaged(pedalIndex);
+
                 int gas = 0;
                 int brake = 0;
-
-               /* x2 = state2.lX;
-                y2 = state2.lY;
-                z2 = state2.lZ;
-                s02 = state2.rglSlider[0];
-                s12 = state2.rglSlider[1];*/
-
-                switch (gasAxis) {
-                    case "X": 
-                        gas = state2.lX;
-                        break;
-                    case "Y":
-                        gas = state2.lY;
-                        break;
-                    case "Z":
-                        gas = state2.lZ;
-                        break;
-                }
-
-                switch (brakeAxis)
+                if (DirectInputWrapper.DevicesCount() > 1)
                 {
-                    case "X":
-                        brake = state2.lX;
-                        break;
-                    case "Y":
-                        brake = state2.lY;
-                        break;
-                    case "Z":
-                        brake = state2.lZ;
-                        break;
-                }
+                    DeviceState state2 = DirectInputWrapper.GetStateManaged(pedalIndex);
 
+
+                    /* x2 = state2.lX;
+                     y2 = state2.lY;
+                     z2 = state2.lZ;
+                     s02 = state2.rglSlider[0];
+                     s12 = state2.rglSlider[1];*/
+                    switch (gasAxis)
+                    {
+                        case "X":
+                            gas = state2.lX;
+                            break;
+                        case "Y":
+                            gas = state2.lY;
+                            break;
+                        case "Z":
+                            gas = state2.lZ;
+                            break;
+                    }
+
+                    switch (brakeAxis)
+                    {
+                        case "X":
+                            brake = state2.lX;
+                            break;
+                        case "Y":
+                            brake = state2.lY;
+                            break;
+                        case "Z":
+                            brake = state2.lZ;
+                            break;
+                    }
+                }
+                else if (FWheel)
+                {
+
+                    brake = state.lRz;
+                    gas = state.lY;
+
+                }
 
                 float totalGas = (maxGas - minGas);
                 float totalBrake = (maxBrake - minBrake);

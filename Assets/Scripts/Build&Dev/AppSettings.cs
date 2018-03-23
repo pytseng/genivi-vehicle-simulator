@@ -34,12 +34,27 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         scenicDrivingScene = "Environment_Yosemite";
         coastalDrivingScene = "Environment_PCH";
 
-        gasAxis = "Z";
-        brakeAxis = "X";
-        minGas = -32768;
-        maxGas = 32768;
-        minBrake = -32768;
-        maxBrake = 32767;
+        gasAxis = "Z"; ///originally Z
+        brakeAxis = "X"; ///originally X
+
+        FantacWheel = true;
+
+        if (!FantacWheel)
+        {
+            minGas = -32768;
+            maxGas = 32768;
+            minBrake = -32768;
+            maxBrake = 32767;
+        }
+        else
+        {
+            minGas = 32768;
+            maxGas = -32768;
+            minBrake = 32768;
+            maxBrake = -32767;
+
+
+        }
         showConfigurator = true;
 
         FFBMultiplier = 1.75f;
@@ -231,6 +246,7 @@ public abstract class AppSettings
     public string coastalDrivingScene;
     public string gasAxis;
     public string brakeAxis;
+    public bool FantacWheel;
     public int maxGas;
     public int minGas;
     public int maxBrake;
