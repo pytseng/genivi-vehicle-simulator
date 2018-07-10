@@ -373,7 +373,7 @@ public class TrackController : UnitySingleton<TrackController> {
             {
                 data[i] = new LightmapData()
                 {
-                    lightmapLight = Resources.Load<Texture2D>("CarSelect_Lightmaps/LightmapFar-" + i)
+                    lightmapColor = Resources.Load<Texture2D>("CarSelect_Lightmaps/LightmapFar-" + i)
                 };
             }
             LightmapSettings.lightmapsMode = LightmapsMode.NonDirectional;

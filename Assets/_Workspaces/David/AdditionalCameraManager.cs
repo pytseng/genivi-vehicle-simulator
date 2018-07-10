@@ -40,7 +40,7 @@ public class AdditionalCameraManager : MonoBehaviour {
           ca.cullingMask = mask;
 
     }
-    public void DestroThis()
+    public void DestroyThis()
     {
         foreach (Transform t in GetComponentsInChildren<Transform>())
         {

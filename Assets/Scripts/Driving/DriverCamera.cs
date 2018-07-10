@@ -73,7 +73,7 @@ public class DriverCamera : MonoBehaviour {
         {
             Debug.Log("Deleting the exsiting Cameras");
             AdditionalCameraManager ac = transform.GetComponentInChildren<AdditionalCameraManager>();
-            ac.DestroThis();
+            ac.DestroyThis();
             Destroy(ac.transform.gameObject);
 
         }
@@ -85,7 +85,7 @@ public class DriverCamera : MonoBehaviour {
 
         AddCam.GetComponent<AdditionalCameraManager>().updateMask(center.GetComponent<Camera>().cullingMask);
         Debug.Log("Done! Cameras shouild be back up!");
-        ActivateAllDisplays(8);
+        ActivateAllDisplays(4);
 
     }
     void Update()
@@ -213,7 +213,9 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
+        if (GameObject.FindObjectOfType<AdditionalCameraManager>()!=null) { 
         GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+        }
        
     }
 
@@ -225,7 +227,10 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
-        GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+        if (GameObject.FindObjectOfType<AdditionalCameraManager>() != null)
+        {
+            GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+        }
     }
 
     public void SetCulingMask(int mask)
@@ -233,8 +238,10 @@ public class DriverCamera : MonoBehaviour {
         center.GetComponent<Camera>().cullingMask = mask;
         left.GetComponent<Camera>().cullingMask = mask;
         right.GetComponent<Camera>().cullingMask = mask;
-        GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
-
+        if (GameObject.FindObjectOfType<AdditionalCameraManager>() != null)
+        {
+            GameObject.FindObjectOfType<AdditionalCameraManager>().updateMask(mask);
+        }
     }
 
     public void SwitchView()

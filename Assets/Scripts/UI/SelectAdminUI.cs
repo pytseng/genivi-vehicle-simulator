@@ -263,7 +263,7 @@ public class SelectAdminUI : MonoBehaviour {
         GUI.DrawTexture(logoRect, logos);
 
         GUI.Label(titleLabel, "VEHICLE & SCENE SELECT", isAdditional || isInfractions ? textOff : textOn);
-        if (Event.current.type == EventType.mouseDown && titleLabel.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && titleLabel.Contains(Event.current.mousePosition))
         {
             hitAdditional = false;
             hitInfractions = false;
@@ -271,14 +271,14 @@ public class SelectAdminUI : MonoBehaviour {
 
 
         GUI.Label(additionalControlsLabel, "ADDITIONAL CONTROLS", isAdditional ? textOn : textOff);
-        if (Event.current.type == EventType.mouseDown && additionalControlsLabel.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && additionalControlsLabel.Contains(Event.current.mousePosition))
         {
             hitAdditional = true;
             hitInfractions = false;
         }
 
         GUI.Label(infractionsLabel, "INFRACTIONS", isInfractions ? textOn : textOff);
-        if (Event.current.type == EventType.mouseDown && infractionsLabel.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && infractionsLabel.Contains(Event.current.mousePosition))
         {
             hitAdditional = false;
             hitInfractions = true;

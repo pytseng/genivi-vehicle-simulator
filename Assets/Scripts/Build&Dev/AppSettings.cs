@@ -37,7 +37,7 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         gasAxis = "Z"; ///originally Z
         brakeAxis = "X"; ///originally X
 
-        FantacWheel = true;
+        FantacWheel = false;
 
         if (!FantacWheel)
         {
