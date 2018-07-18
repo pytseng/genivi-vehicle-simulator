@@ -1,7 +1,7 @@
 import socket
 import threading
 
-bind_ip = '0.0.0.0'
+bind_ip = '192.168.50.199'
 bind_port = 9002
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,7 +19,7 @@ def handle_client_connection(client_socket):
 		except KeyboardInterrupt:
 			if client_socket:  # <---
 				client_socket.close()
-			break 
+			break
 
 while True:
     client_sock, address = server.accept()

@@ -89,10 +89,15 @@ public class DriveAdminUISettings : MonoBehaviour
 
     public void Update()
     {
-        if (didInit && Time.time - lastRemoteUpdate > remoteUpdateTime)
+        if (RemoteAdminController.Instance!=null && didInit && Time.time - lastRemoteUpdate > remoteUpdateTime)  //DAVIDGOEDICKE EDIT
         {
             RemoteAdminController.Instance.SendMessageRaw(RemoteAdminController.SendMessageType.REFRESH_STATE, BuildRemoteState());
             lastRemoteUpdate = Time.time;
+        }
+        else if (RemoteAdminController.Instance == null) //DAVIDGOEDICKE EDIT
+        {
+
+            Debug.Log("We potentially just avoided sending data because the RemoteAdminController is not present");  //DAVIDGOEDICKE EDIT
         }
 
 

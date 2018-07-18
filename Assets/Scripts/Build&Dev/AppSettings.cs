@@ -37,7 +37,7 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         gasAxis = "Z"; ///originally Z
         brakeAxis = "X"; ///originally X
 
-        FantacWheel = false;
+        FantacWheel = true;
 
         if (!FantacWheel)
         {
@@ -49,15 +49,15 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         else
         {
             minGas = 32768;
-            maxGas = -32768;
+            maxGas = -32767;
             minBrake = 32768;
-            maxBrake = -32767;
+            maxBrake = -32767 ;
 
 
         }
         showConfigurator = true;
 
-        FFBMultiplier = 1.75f;
+        FFBMultiplier = 1.0f;
 
         
     }

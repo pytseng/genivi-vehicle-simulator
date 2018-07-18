@@ -190,7 +190,7 @@ public class MasterSelectController : MonoBehaviour {
 
         transform.root.gameObject.AddComponent<DontDestroyOnLoadDriving>();
 
-        Debug.LogError("TestA");//David is doing things he should not 
+       // Debug.LogError("TestA");//David is doing things he should not 
         yield return AppController.Instance.LoadDrivingSceneAsync(AppController.Instance.currentSessionSettings.selectedEnvironment);
          // AppController.Instance.LoadDrivingScene(AppController.Instance.currentSessionSettings.selectedEnvironment);
        // yield return new WaitForSeconds(2f);
@@ -198,7 +198,7 @@ public class MasterSelectController : MonoBehaviour {
       //  {
        //    dc.ActivateAllDisplays(2);
       //  }
-        Debug.LogError("TestB");
+       // Debug.LogError("TestB");
        
         //save last scene for infractions
         InfractionController.Instance.SetLastScene(AppController.Instance.currentSessionSettings.selectedEnvironment);

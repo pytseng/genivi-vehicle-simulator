@@ -80,7 +80,10 @@ public class RemoteAdminController : PersistentUnitySingleton<RemoteAdminControl
     private HttpServer httpServer;
     private WebSocketServer server;
 
-   // public static event System.Action<ReceiveMessageType messageType OnAdminMessage()
+    private Queue<string> receivedMessages;
+    private Queue<string> debugLog;
+
+    // public static event System.Action<ReceiveMessageType messageType OnAdminMessage()
 
 
     public static string tempCachePath;
@@ -229,6 +232,7 @@ public class RemoteAdminController : PersistentUnitySingleton<RemoteAdminControl
 
     public void SendMessage(SendMessageType message, int arg)
     {
+        Debug.Log(message.ToString() + " message and argument" + arg.ToString());
         string msg = "{\"messageType\" : \"" + message.ToString() + "\", \"messageArgs\" : { \"int\" : " + arg + "}}";
         server.WebSocketServices.Broadcast(msg);
     }
@@ -275,8 +279,7 @@ public class RemoteAdminController : PersistentUnitySingleton<RemoteAdminControl
     }
 
 
-    private Queue<string> receivedMessages;
-    private Queue<string> debugLog;
+    
 
     public void ReceiveMessage(string rawData)
     {

@@ -38,6 +38,7 @@ public class DataStreamServer : PersistentUnitySingleton<DataStreamServer> {
         base.Awake();
         connections = new List<ConnectionData>();
         var dbEndpoint = new IPEndPoint(IPAddress.Parse(NetworkController.settings.clientIp), PORT);
+        Debug.Log("Expect client at IP: " + NetworkController.settings.clientIp.ToString() + " and port: " + PORT);
         var altEndpoint = new IPEndPoint(IPAddress.Parse(NetworkController.settings.altClientIP), ALTPORT);
         var eventEndpoint = new IPEndPoint(IPAddress.Parse(NetworkController.settings.eventClientIP), EVENTPORT);
 
@@ -45,6 +46,8 @@ public class DataStreamServer : PersistentUnitySingleton<DataStreamServer> {
         var altClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         var eventClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         dbClient.BeginConnect(dbEndpoint, new AsyncCallback(ConnectCallback), new ConnectionData() { client = dbClient, IC = true, events = false });
+
+        Debug.Log(dbClient.Available.ToString());
         altClient.BeginConnect(altEndpoint, new AsyncCallback(ConnectCallback), new ConnectionData() { client = altClient, IC = false, events = false });
         eventClient.BeginConnect(eventEndpoint, new AsyncCallback(ConnectCallback), new ConnectionData() { client = eventClient, IC = false, events = true });
 

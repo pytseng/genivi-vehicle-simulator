@@ -27,6 +27,11 @@ public class SteeringWheelInputController : InputController {
     private int damper = 0;
     private int springSaturation = 0;
     private int springCoefficient = 0;
+    //David: slave force feedback controller
+    private int slaveConstant = 0;
+    private int slaveDamper = 0;
+    private int slaveSpringSaturation = 0;
+    private int slaveSpringCoefficient = 0;
 
 
     private bool forceFeedbackPlaying = false;
@@ -34,18 +39,27 @@ public class SteeringWheelInputController : InputController {
 
     private string brakeAxis;
     private string gasAxis;
-    private bool FWheel;
+
     private int minBrake;
     private int maxBrake;
     private int minGas;
     private int maxGas;
 
+
     private GUIStyle debugStyle;
 
     private int wheelIndex = 0;
     private int pedalIndex = 1;
+    private int masterIndex = 2;
 
     public float FFBGain = 1f;
+
+    /// <summary>
+    /// David edit 
+    /// </summary>
+    private bool FWheel; //stands for Fanatec wheel
+    private bool MasterSteeringWheel = false;
+    private float slaveSteering = 0;
 
     protected override void Start()
     {
@@ -65,9 +79,17 @@ public class SteeringWheelInputController : InputController {
         }
 
         DirectInputWrapper.Init();
-
+        for(int i = 0; i < DirectInputWrapper.DevicesCount(); i++)
+        {
+            if (DirectInputWrapper.GetProductNameManaged(i) == "FANATEC CSL Elite Wheel Base")
+            {
+                MasterSteeringWheel = true;
+                masterIndex = i;
+            }
+        }
+       
         bool ff0 = DirectInputWrapper.HasForceFeedback(0);
-        if (DirectInputWrapper.DevicesCount() > 1)
+        if (DirectInputWrapper.DevicesCount() > 1)  // steering one and two should be padles and participant steering wheel
         {
             bool ff1 = DirectInputWrapper.HasForceFeedback(1);
 
@@ -126,7 +148,30 @@ public class SteeringWheelInputController : InputController {
         damper = force;
     }
 
-    public void InitSpringForce(int sat, int coeff)
+    public void SetSpringForce(int sat, int coeff)
+    {
+        springCoefficient = coeff;
+        springSaturation = sat;
+    }
+    /// DAVID: Additional controlls for the slave steering wheel to follow the main steeringwheel
+    /// 
+    public void SetSlaveConstantForce(int force)
+    {
+        slaveConstant= force;
+    }
+
+    public void SetSlaveDamperForce(int force)
+    {
+      slaveDamper = force;
+    }
+
+    public void SetSlaveSpringForce(int sat, int coeff)
+    {
+        slaveSpringCoefficient = coeff;
+        slaveSpringSaturation = sat;
+    }
+
+public void InitSpringForce(int sat, int coeff)
     {
         StartCoroutine(_InitSpringForce(sat, coeff));
     }
@@ -134,6 +179,10 @@ public class SteeringWheelInputController : InputController {
     public void StopSpringForce()
     {
         Debug.Log("stopping spring" + DirectInputWrapper.StopSpringForce(wheelIndex));
+        if (MasterSteeringWheel)
+        {
+            Debug.Log("stopping spring" + DirectInputWrapper.StopSpringForce(masterIndex));
+        }
     }
 
     private IEnumerator _InitSpringForce(int sat, int coeff)
@@ -143,31 +192,49 @@ public class SteeringWheelInputController : InputController {
 
 
         Debug.Log("stopping spring" + DirectInputWrapper.StopSpringForce(wheelIndex));
+        if (MasterSteeringWheel)
+        {
+            Debug.Log("stopping spring" + DirectInputWrapper.StopSpringForce(masterIndex));
+        }
         yield return new WaitForSeconds(1f);
         long res = -1;
         int tries = 0;
         while (res < 0) {
             res  = DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(sat * FFBGain), Mathf.RoundToInt(coeff * FFBGain));
-            Debug.Log("starting spring" + res);
+            Debug.Log("starting spring for the wheel" + res);
 
             tries++;
             if(tries > 150)
             {
-                Debug.Log("coudn't init spring force. aborting");
+                Debug.Log("coudn't init spring forcefor the steerng wheel. aborting");
                 break;
             }
 
             yield return null;
         }
+        if (MasterSteeringWheel)
+        {
+            res = -1;
+            tries = 0;
+            while (res < 0)
+            {
+                res = DirectInputWrapper.PlaySpringForce(masterIndex, 0, Mathf.RoundToInt(sat * FFBGain), Mathf.RoundToInt(coeff * FFBGain));
+                Debug.Log("starting spring for the master wheel" + res);
 
+                tries++;
+                if (tries > 150)
+                {
+                    Debug.Log("coudn't init spring force for the master wheel. aborting");
+                    break;
+                }
+
+                yield return null;
+            }
+        }
 
     }
 
-    public void SetSpringForce(int sat, int coeff)
-    {
-        springCoefficient = coeff;
-        springSaturation = sat;
-    }
+   
 
     public void OnGUI()
     {
@@ -183,11 +250,13 @@ public class SteeringWheelInputController : InputController {
         damper = 0;
         springCoefficient = 0;
         springSaturation = 0;
+
+        slaveConstant = 0;
+        slaveDamper = 0;
+        slaveSpringCoefficient = 0;
+        slaveSpringSaturation = 0;
         yield return new WaitForSeconds(0.5f);
-
-
-
-
+///David: what was written here
         yield return new WaitForSeconds(0.5f);
         forceFeedbackPlaying = true;
     }
@@ -239,11 +308,23 @@ public class SteeringWheelInputController : InputController {
         DirectInputWrapper.Update();
 
         {
-            DeviceState state =  DirectInputWrapper.GetStateManaged(wheelIndex);
+
+            DeviceState state;
+            DeviceState slaveState;
+            if (MasterSteeringWheel) { 
+                state = DirectInputWrapper.GetStateManaged(masterIndex);
+                slaveState = DirectInputWrapper.GetStateManaged(wheelIndex);
+                slaveSteering = slaveState.lX / 32768f;
+            }
+            else{
+                state = DirectInputWrapper.GetStateManaged(wheelIndex);
+            }
+
             steerInput = state.lX / 32768f;
             accelInput = state.rglSlider[0] / -32768f;
 
-           // Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
+
+            // Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
 
 
             /* x = state.lX;
@@ -253,18 +334,32 @@ public class SteeringWheelInputController : InputController {
              s1 = state.rglSlider[1];*/
             if (forceFeedbackPlaying)
             {
-                DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(constant * FFBGain));
-                DirectInputWrapper.PlayDamperForce(wheelIndex, Mathf.RoundToInt(damper * FFBGain));
-                DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(springSaturation * FFBGain), springCoefficient);
+                if (MasterSteeringWheel)
+                {
+                    DirectInputWrapper.PlayConstantForce(masterIndex, Mathf.RoundToInt(constant * FFBGain));
+                    DirectInputWrapper.PlayDamperForce(masterIndex, Mathf.RoundToInt(damper * FFBGain));
+                    DirectInputWrapper.PlaySpringForce(masterIndex, 0, Mathf.RoundToInt(springSaturation * FFBGain), springCoefficient);
+
+                    DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(slaveConstant * FFBGain));
+                    DirectInputWrapper.PlayDamperForce(wheelIndex, Mathf.RoundToInt(slaveDamper * FFBGain));
+                    DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(slaveSpringSaturation * FFBGain), slaveSpringCoefficient);
+
+
+                }
+                else
+                {
+                    DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(constant * FFBGain));
+                    DirectInputWrapper.PlayDamperForce(wheelIndex, Mathf.RoundToInt(damper * FFBGain));
+                    DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(springSaturation * FFBGain), springCoefficient);
+                }
+
             }
-
-
             if(DirectInputWrapper.DevicesCount() > 1 || FWheel)
             {
 
                 int gas = 0;
                 int brake = 0;
-                if (DirectInputWrapper.DevicesCount() > 1)
+                if (DirectInputWrapper.DevicesCount() > 1 && !FWheel)
                 {
                     DeviceState state2 = DirectInputWrapper.GetStateManaged(pedalIndex);
 
@@ -302,12 +397,11 @@ public class SteeringWheelInputController : InputController {
                 }
                 else if (FWheel)
                 {
-
                     brake = state.lRz;
                     gas = state.lY;
 
                 }
-
+                //Debug.Log(brake.ToString() + " break and gas" + gas.ToString());
                 float totalGas = (maxGas - minGas);
                 float totalBrake = (maxBrake - minBrake);
 
@@ -330,9 +424,17 @@ public class SteeringWheelInputController : InputController {
     {
         return steerInput;
     }
-
+    public float GetSlaveSteeringInput()
+    {
+        return slaveSteering;
+    }
     public override float GetHandBrakeInput()
     {
         return 0f;
+    }
+
+    public bool getMasterSteeringWheel()
+    {
+        return MasterSteeringWheel;
     }
 }

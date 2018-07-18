@@ -27,7 +27,8 @@ public class ForceFeedback : MonoBehaviour
 
     void Start()
     {
-        if(AppController.Instance.UserInput is SteeringWheelInputController)
+        
+        if (AppController.Instance.UserInput is SteeringWheelInputController)
         {
             logi = AppController.Instance.UserInput as SteeringWheelInputController;
         }
@@ -106,9 +107,26 @@ public class ForceFeedback : MonoBehaviour
         {
             if (logi != null)
             {
-                logi.SetConstantForce((int)(forceFeedback * 10000f));
-                logi.SetSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(forceFeedback) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
-                logi.SetDamperForce(damperAmount);
+                if (!logi.getMasterSteeringWheel()) { 
+                    logi.SetConstantForce((int)(forceFeedback * 10000f));
+                    logi.SetSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(forceFeedback) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
+                    logi.SetDamperForce(damperAmount);
+                }
+                else
+                {
+                    //
+                   
+                    logi.SetConstantForce((int)(forceFeedback * 10000f));
+                    logi.SetSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(forceFeedback) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
+                    logi.SetDamperForce(damperAmount);
+
+                    // computing the difference in steering angle 
+                    float steeringDifference = -((logi.GetSteerInput() - logi.GetSlaveSteeringInput())*2);
+                   // Debug.Log(steeringDifference);
+                    logi.SetSlaveConstantForce((int)(steeringDifference * 10000f));
+                    logi.SetSlaveSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(steeringDifference) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
+                    logi.SetSlaveDamperForce(damperAmount);
+                }
             }
         }
 

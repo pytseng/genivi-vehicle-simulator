@@ -85,7 +85,7 @@ public class DriverCamera : MonoBehaviour {
 
         AddCam.GetComponent<AdditionalCameraManager>().updateMask(center.GetComponent<Camera>().cullingMask);
         Debug.Log("Done! Cameras shouild be back up!");
-        ActivateAllDisplays(4);
+        ActivateAllDisplays(8);
 
     }
     void Update()
