@@ -12,7 +12,7 @@ public class SetDisplay : MonoBehaviour {
             elmo.targetDisplay = 1;
 
         }
-        ActivateAllDisplays(2);
+        ActivateAllDisplays(2); 
     }
 	
 	// Update is called once per frame

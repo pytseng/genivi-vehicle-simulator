@@ -73,7 +73,13 @@ public class TrafAIMotor : MonoBehaviour
         {
             Debug.Log("Blob: " + transform.name);
             DestroyImmediate(GetComponent<Rigidbody>());
-            DestroyImmediate(GetComponent<Collider>());
+            foreach(Collider c in GetComponentsInChildren<Collider>())
+            {
+                Debug.Log("blub2");
+              //  c.isTrigger = true;
+
+            }
+           
         }
 
 

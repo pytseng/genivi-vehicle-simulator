@@ -213,12 +213,12 @@ public class CANDataCollector : MonoBehaviour {
         //TODO: calculate this from wheel rpm
 
 		//CarLoc
-		carXLoc = TrackController.Instance.car.transform.position.x;
-		carYLoc = TrackController.Instance.car.transform.position.y;
-		carZLoc = TrackController.Instance.car.transform.position.z;
-		xAngle = TrackController.Instance.car.transform.rotation.eulerAngles.x;
-		yAngle = TrackController.Instance.car.transform.rotation.eulerAngles.y;
-		zAngle = TrackController.Instance.car.transform.rotation.eulerAngles.z;
+		float carXLoc = TrackController.Instance.car.transform.position.x;
+        float carYLoc = TrackController.Instance.car.transform.position.y;
+        float carZLoc = TrackController.Instance.car.transform.position.z;
+        float xAngle = TrackController.Instance.car.transform.rotation.eulerAngles.x;
+        float yAngle = TrackController.Instance.car.transform.rotation.eulerAngles.y;
+        float zAngle = TrackController.Instance.car.transform.rotation.eulerAngles.z;
 
         FullDataFrame frame = new FullDataFrame()
         {
@@ -238,7 +238,13 @@ public class CANDataCollector : MonoBehaviour {
             wheelSpeedRL = vehicleController.WheelRL.rpm * 60,
             wheelSpeedRR = vehicleController.WheelRR.rpm * 60,
             yawRate = yaw,
-            triggeredEvent1TimeStamp = 0f
+            triggeredEvent1TimeStamp = 0f,
+            carXLoc= carXLoc,
+            carYLoc = carYLoc,
+            carZLoc = carZLoc,
+            xAngle = xAngle,
+            yAngle = yAngle,
+            zAngle = zAngle
         };
 
         if(triggerTimeStamp1 > 0f || triggerTimeStamp2 > 0f || triggerTimeStamp3 > 0f)
