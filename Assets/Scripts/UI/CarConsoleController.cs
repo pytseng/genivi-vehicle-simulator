@@ -16,7 +16,7 @@ public class CarConsoleController : MonoBehaviour {
 
     private float speed;
     private float rpm;
-
+    public GameObject centerStackPrefab;
     public NetworkedCarConsole[] consoles;
     private int currentConsole = -1;
 
@@ -49,7 +49,9 @@ public class CarConsoleController : MonoBehaviour {
         if (isRemoteClient) {
             NetworkController.Instance.OnInitConsole += SetupView;
             NetworkController.Instance.OnSelectCar += OnSelectCar;
+            GameObject.Instantiate(centerStackPrefab);
         }
+
     }
 
 

@@ -60,6 +60,8 @@ public class TrafAIMotor : MonoBehaviour
 
     private RaycastHit heightHit;
 
+
+    private bool useRgidBody = false;
     public void Init()
     {
         target = currentEntry.waypoints[currentIndex];
@@ -67,6 +69,12 @@ public class TrafAIMotor : MonoBehaviour
         inited = true;
         nextRaycast = 0f;
         CheckHeight();
+        if (!useRgidBody)
+        {
+            Debug.Log("Blob: " + transform.name);
+            DestroyImmediate(GetComponent<Rigidbody>());
+            DestroyImmediate(GetComponent<Collider>());
+        }
 
 
         InvokeRepeating("CheckHeight", 0.2f, 0.2f);
@@ -361,10 +369,17 @@ public class TrafAIMotor : MonoBehaviour
 
     void MoveCar()
     {
-        //transform.Rotate(0f, currentTurn * Time.deltaTime, 0f);
-        GetComponent<Rigidbody>().MoveRotation(Quaternion.FromToRotation(Vector3.up, heightHit.normal) * Quaternion.Euler(0f, transform.eulerAngles.y + currentTurn * Time.fixedDeltaTime, 0f));
-        GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime);
-        //transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
+        if (useRgidBody)
+        {
+
+            GetComponent<Rigidbody>().MoveRotation(Quaternion.FromToRotation(Vector3.up, heightHit.normal) * Quaternion.Euler(0f, transform.eulerAngles.y + currentTurn * Time.fixedDeltaTime, 0f));
+            GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * currentSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            transform.Rotate(0f, currentTurn * Time.fixedDeltaTime, 0f);
+            transform.Translate(Vector3.forward * currentSpeed * Time.fixedDeltaTime);
+        }
     }
 
 }
