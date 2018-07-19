@@ -31,6 +31,14 @@ public struct FullDataFrame
     public float triggeredEvent1TimeStamp;
     public float triggeredEvent2TimeStamp;
     public float triggeredEvent3TimeStamp;
+	// Gavriel: adding position of car for console map (DriveMap) 7/19/2018
+	public float carXLoc;
+	public float carYLoc;
+	public float carZLoc;
+	// Gavriel: adding euler angles of car for console map (DriveMap) 7/19/2018
+	public float xAngle;
+	public float yAngle;
+	public float zAngle;
 
     public string ToCSV()
     {
@@ -48,7 +56,13 @@ public struct FullDataFrame
                 "WheelSpeedFrR, {12:F4}, {0}\n" +
                 "WheelSpeedReL, {13:F4}, {0}\n" +
                 "WheelSpeedReR, {14:F4}, {0}\n" +
-                "YawRate, {15:F4}, {0}\n", time, cruiseSpeed, rpm, gearPosActual, gearPosTarget, accelleratorPos, deceleratorPos, rollRate, steeringWheelAngle, vehicleSpeed, vehicleSpeedOverGround, wheelSpeedFL, wheelSpeedFR, wheelSpeedRL, wheelSpeedRR, yawRate);
+				"YawRate, {15:F4}, {0}\n" +
+				"carXLoc, {16:F4}, {0}\n" +
+				"carYLoc, {17:F4}, {0}\n" +
+				"carZLoc, {18:F4}, {0}\n" +
+				"xAngle, {19:F4}, {0}\n" +
+				"yAngle, {20:F4}, {0}\n" +
+				"zAngle, {21:F4}, {0}\n", time, cruiseSpeed, rpm, gearPosActual, gearPosTarget, accelleratorPos, deceleratorPos, rollRate, steeringWheelAngle, vehicleSpeed, vehicleSpeedOverGround, wheelSpeedFL, wheelSpeedFR, wheelSpeedRL, wheelSpeedRR, yawRate, carXLoc, carYLoc, carZLoc, xAngle, yAngle, zAngle);
 
         //TODO: handle this better
         if (triggeredEvent1TimeStamp > 0f)
@@ -74,7 +88,14 @@ public struct FullDataFrame
     {
         return string.Format(
             "EngineSpeed, {1:F4}, {0}\n" +
-            "VehicleSpeed, {2:F4}, {0}\n", time, rpm, vehicleSpeed);
+            "VehicleSpeed, {2:F4}, {0}\n" +
+			"carXLoc, {3:F4}, {0}\n" +
+			"carYLoc, {4:F4}, {0}\n" +
+			"carZLoc, {5:F4}, {0}\n" +
+			"xAngle, {6:F4}, {0}\n" +
+			"yAngle, {7:F4}, {0}\n" +
+			"zAngle, {8:F4}, {0}\n", time, rpm, vehicleSpeed, carXLoc, carYLoc, carZLoc, xAngle, yAngle, zAngle);
+			
     }
 }
 
@@ -190,6 +211,14 @@ public class CANDataCollector : MonoBehaviour {
         //VehicleSpeed
         float kmh = rb.velocity.magnitude * 3.6f;
         //TODO: calculate this from wheel rpm
+
+		//CarLoc
+		carXLoc = TrackController.Instance.car.transform.position.x;
+		carYLoc = TrackController.Instance.car.transform.position.y;
+		carZLoc = TrackController.Instance.car.transform.position.z;
+		xAngle = TrackController.Instance.car.transform.rotation.eulerAngles.x;
+		yAngle = TrackController.Instance.car.transform.rotation.eulerAngles.y;
+		zAngle = TrackController.Instance.car.transform.rotation.eulerAngles.z;
 
         FullDataFrame frame = new FullDataFrame()
         {

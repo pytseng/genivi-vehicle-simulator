@@ -19,6 +19,12 @@ public class DataStreamListener : MonoBehaviour {
 
     public static float currentRPM;
     public static float currentSpeed;
+	public static float currentCarXLoc;
+	public static float currentCarYLoc;
+	public static float currentCarZLoc;
+	public static float currentXAngle;
+	public static float currentYAngle;
+	public static float currentZAngle;
     public static float lastTimeStamp = 0f;
 
     private bool isConnected = false;
@@ -80,7 +86,25 @@ public class DataStreamListener : MonoBehaviour {
                     } else if(data[0].Trim() == "VehicleSpeed")
                     {
                         currentSpeed = float.Parse(data[1].Trim());
-                    }
+					} else if(data[0].Trim() == "carXLoc")
+					{
+						currentCarXLoc = float.Parse(data[1].Trim());
+					} else if(data[0].Trim() == "carYLoc")
+					{
+						currentCarYLoc = float.Parse(data[1].Trim());
+					} else if(data[0].Trim() == "carZLoc")
+					{
+						currentCarZLoc = float.Parse(data[1].Trim());
+					} else if(data[0].Trim() == "xAngle")
+					{
+						currentXAngle = float.Parse(data[1].Trim());
+					} else if(data[0].Trim() == "yAngle")
+					{
+						currentYAngle = float.Parse(data[1].Trim());
+					} else if(data[0].Trim() == "zAngle")
+					{
+						currentZAngle = float.Parse(data[1].Trim());
+					}
                     endLineIndex = secondaryBuffer.IndexOf("\n");
                 }
 
