@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System;
 
+
 public class Logger : MonoBehaviour
 {
 
@@ -24,7 +25,7 @@ public class Logger : MonoBehaviour
     private float time; //Elapsed time since start of the game
     private int frame; //Elapsed number of frames since start of the game
     **/
-
+   
 
     private Queue<string> databuffer = new Queue<string>(); //Data buffer queue
     private ArrayList rawData = new ArrayList(); //To store unformatted data values
@@ -45,6 +46,7 @@ public class Logger : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+      
         player = GameObject.Find("Player");
 
 
@@ -92,12 +94,14 @@ public class Logger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        data = Dataset1("D1");
-        databuffer.Enqueue(data);
+        //data = Dataset1("D1");
         data = "";
-
-        Vector3 test = TrackController.Instance.car.transform.position;
+        rawData.Add(GetFrame());
+        rawData.Add(GetTime());
+        rawData.Add(TrackController.Instance.car.transform.position);
+        data = FormatData(rawData,sep);
+        databuffer.Enqueue(data);
+        rawData.Clear();
 
     }
 
@@ -178,7 +182,7 @@ public class Logger : MonoBehaviour
         string dat = encode + sep;
         if (header)
         {
-            dat = dat + "Frame" + sep + "Time" + sep + "Position"+sep+"Velocity\r\n";
+            dat = dat + "Frame" + sep + "Time" + sep + "Position"+sep+"Velocity"+sep+"speed\r\n";
         }
         else
         {
@@ -186,6 +190,7 @@ public class Logger : MonoBehaviour
             rawData.Add(GetTime());
             rawData.Add(GetPos(player));
             rawData.Add(GetVelocity(player));
+            rawData.Add(player.GetComponent<Rigidbody>().velocity.magnitude);
             dat = dat + FormatData(rawData, sep);
         }
         rawData.Clear();
@@ -208,7 +213,7 @@ public class Logger : MonoBehaviour
             if (!(elem is string)) el = elem.ToString();
             else { el = (string)elem; }
 
-            if (i == al.Count - 1) dat = dat + el + "\r\n";
+            if (i == al.Count - 1) dat = dat + el + '\n';
             else { dat = dat + el + separator; }
         }
         return dat;
