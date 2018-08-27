@@ -79,16 +79,13 @@ public class SteeringWheelInputController : InputController {
         }
 
         DirectInputWrapper.Init();
-        for(int i = 0; i < DirectInputWrapper.DevicesCount(); i++)
-        {
-            if (DirectInputWrapper.GetProductNameManaged(i) == "FANATEC CSL Elite Wheel Base")
-            {
-                MasterSteeringWheel = true;
-                masterIndex = i;
-            }
-        }
-       
-        bool ff0 = DirectInputWrapper.HasForceFeedback(0);
+
+        MasterSteeringWheel = false;
+        masterIndex = reportMasterWheel("FANATEC CSL Elite Wheel Base");
+        if (masterIndex > -1) { MasterSteeringWheel = true; }
+
+
+        bool ff0 = DirectInputWrapper.HasForceFeedback(0); /// Thios part mworks for now as the main inputs are always 0 or 1 we need code here though tat jumps over the master wheel shpould it be present
         if (DirectInputWrapper.DevicesCount() > 1)  // steering one and two should be padles and participant steering wheel
         {
             bool ff1 = DirectInputWrapper.HasForceFeedback(1);
@@ -107,13 +104,23 @@ public class SteeringWheelInputController : InputController {
                 Debug.Log("STEERINGWHEEL: Multiple devices and couldn't find steering wheel device index");
         }
 
+      
+        if (MasterSteeringWheel) {
+        minBrake = AppController.Instance.appSettings.minBrakeFanatec;
+        maxBrake = AppController.Instance.appSettings.maxBrakeFanatec;
+        minGas = AppController.Instance.appSettings.minGasFanatec;
+        maxGas = AppController.Instance.appSettings.maxGasFanatec; }
+        else
+        {
             minBrake = AppController.Instance.appSettings.minBrake;
-        maxBrake = AppController.Instance.appSettings.maxBrake;
-        minGas = AppController.Instance.appSettings.minGas;
-        maxGas = AppController.Instance.appSettings.maxGas;
+            maxBrake = AppController.Instance.appSettings.maxBrake;
+            minGas = AppController.Instance.appSettings.minGas;
+            maxGas = AppController.Instance.appSettings.maxGas;
+        }
+
         gasAxis = AppController.Instance.appSettings.gasAxis;
         brakeAxis = AppController.Instance.appSettings.brakeAxis;
-        FWheel = AppController.Instance.appSettings.FantacWheel;
+       // FWheel = AppController.Instance.appSettings.FantacWheel;
         FFBGain = AppController.Instance.appSettings.FFBMultiplier;
 
         
@@ -158,6 +165,29 @@ public class SteeringWheelInputController : InputController {
     public void SetSlaveConstantForce(int force)
     {
         slaveConstant= force;
+    }
+    public int reportMasterWheel(string wheelName)
+    {
+        int returnVal = -1;
+
+        for (int i = 0; i < DirectInputWrapper.DevicesCount(); i++)
+        {
+            if (DirectInputWrapper.GetProductNameManaged(i) == wheelName)
+            {
+                Debug.Log("We got the FantaTec as a Master now! ");
+               
+                returnVal = i;
+                break;
+            }
+            else
+            {
+                Debug.Log("Number" + i + "is not fanatec, moving on");
+            }
+        }
+
+
+        return returnVal;
+
     }
 
     public void SetSlaveDamperForce(int force)
@@ -311,18 +341,21 @@ public void InitSpringForce(int sat, int coeff)
 
             DeviceState state;
             DeviceState slaveState;
+
+           
             if (MasterSteeringWheel) { 
                 state = DirectInputWrapper.GetStateManaged(masterIndex);
                 slaveState = DirectInputWrapper.GetStateManaged(wheelIndex);
                 slaveSteering = slaveState.lX / 32768f;
             }
             else{
+               
                 state = DirectInputWrapper.GetStateManaged(wheelIndex);
             }
 
             steerInput = state.lX / 32768f;
             accelInput = state.rglSlider[0] / -32768f;
-
+           
 
             // Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
 
@@ -354,16 +387,14 @@ public void InitSpringForce(int sat, int coeff)
                 }
 
             }
-            if(DirectInputWrapper.DevicesCount() > 1 || FWheel)
+            if(DirectInputWrapper.DevicesCount() > 1 || MasterSteeringWheel)
             {
 
                 int gas = 0;
                 int brake = 0;
-                if (DirectInputWrapper.DevicesCount() > 1 && !FWheel)
+                if (DirectInputWrapper.DevicesCount() > 1 && !MasterSteeringWheel)
                 {
                     DeviceState state2 = DirectInputWrapper.GetStateManaged(pedalIndex);
-
-
                     /* x2 = state2.lX;
                      y2 = state2.lY;
                      z2 = state2.lZ;
@@ -395,7 +426,7 @@ public void InitSpringForce(int sat, int coeff)
                             break;
                     }
                 }
-                else if (FWheel)
+                if (MasterSteeringWheel)
                 {
                     brake = state.lRz;
                     gas = state.lY;

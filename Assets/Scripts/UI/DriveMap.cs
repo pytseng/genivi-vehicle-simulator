@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class DriveMap : MonoBehaviour {
@@ -7,8 +8,20 @@ public class DriveMap : MonoBehaviour {
     public bool mirrorMap = false; //because PCH is weird
     public Vector3 tlMap;
     public Vector3 brMap;
-	
-	void Update () {
+
+    private DataStreamListener ds;
+    private bool isRemoteClient;
+    void OnEnable()
+    {
+        isRemoteClient = GameObject.FindObjectOfType<CarConsoleController>().isRemoteClient;
+        if (isRemoteClient)
+        {
+            ds = GameObject.FindObjectOfType<DataStreamListener>().GetComponent<DataStreamListener>();
+          
+        }
+    }
+  
+    void Update () {
         //update map
         if (gameObject.activeSelf)
         {
@@ -33,9 +46,20 @@ public class DriveMap : MonoBehaviour {
 
             }
             */
+            Vector3 currentPosition = Vector3.zero;
+            Vector3 currentRotation = Vector3.zero;
 
-            Vector3 currentPosition = TrackController.Instance.car.transform.position;
-            Vector3 currentRotation = TrackController.Instance.car.transform.rotation.eulerAngles - Vector3.up * 90f;
+            if (isRemoteClient)
+            {
+                currentPosition = new Vector3(DataStreamListener.currentCarXLoc, DataStreamListener.currentCarYLoc, DataStreamListener.currentCarZLoc);
+                currentRotation = new Vector3(DataStreamListener.currentXAngle, DataStreamListener.currentYAngle, DataStreamListener.currentZAngle);
+
+            }
+            else
+            {
+                currentPosition = TrackController.Instance.car.transform.position;
+                currentRotation = TrackController.Instance.car.transform.rotation.eulerAngles - Vector3.up * 90f;
+            }
 
             float xPc = (currentPosition.x - tlMap.x) / (brMap.x - tlMap.x);
             float zPc = (currentPosition.z - brMap.z) / (tlMap.z - brMap.z);

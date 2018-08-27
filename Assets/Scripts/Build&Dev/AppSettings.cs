@@ -37,24 +37,21 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         gasAxis = "Z"; ///originally Z
         brakeAxis = "X"; ///originally X
 
-        FantacWheel = true;
+        
 
-        if (!FantacWheel)
-        {
+       
             minGas = -32768;
             maxGas = 32768;
             minBrake = -32768;
             maxBrake = 32767;
-        }
-        else
-        {
-            minGas = 32768;
-            maxGas = -32767;
-            minBrake = 32768;
-            maxBrake = -32767 ;
+        
+            minGasFanatec = 32768;
+            maxGasFanatec = -32767;
+            minBrakeFanatec = 32768;
+            maxBrakeFanatec = -32767 ;
 
 
-        }
+        
         showConfigurator = true;
 
         FFBMultiplier = 1.0f;
@@ -106,6 +103,13 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         maxBrake = System.Convert.ToInt32(reader.ReadElementString("maxBrake"));
         minGas = System.Convert.ToInt32(reader.ReadElementString("minGas"));
         maxGas = System.Convert.ToInt32(reader.ReadElementString("maxGas"));
+
+        minBrakeFanatec = System.Convert.ToInt32(reader.ReadElementString("minBrakeFanatec"));
+        maxBrakeFanatec = System.Convert.ToInt32(reader.ReadElementString("maxBrakeFanatec"));
+        minGasFanatec = System.Convert.ToInt32(reader.ReadElementString("minGasFanatec"));
+        maxGasFanatec = System.Convert.ToInt32(reader.ReadElementString("maxGasFanatec"));
+
+
         FFBMultiplier = System.Convert.ToSingle(reader.ReadElementString("FFBMultiplier"));
         reader.ReadEndElement();
     }
@@ -126,6 +130,10 @@ public class DefaultAppSettings : AppSettings, IXmlSerializable
         writer.WriteElementString("maxBrake", maxBrake.ToString());
         writer.WriteElementString("minGas", minGas.ToString());
         writer.WriteElementString("maxGas", maxGas.ToString());
+        writer.WriteElementString("minBrakeFanatec", minBrakeFanatec.ToString());
+        writer.WriteElementString("maxBrakeFanatec", maxBrakeFanatec.ToString());
+        writer.WriteElementString("minGasFanatec", minGasFanatec.ToString());
+        writer.WriteElementString("maxGasFanatec", maxGasFanatec.ToString());
         writer.WriteElementString("FFBMultiplier", FFBMultiplier.ToString());
     }
 }
@@ -246,11 +254,15 @@ public abstract class AppSettings
     public string coastalDrivingScene;
     public string gasAxis;
     public string brakeAxis;
-    public bool FantacWheel;
+   
     public int maxGas;
     public int minGas;
     public int maxBrake;
     public int minBrake;
+    public int maxGasFanatec; //David added to account for masterSteeringDifference while preering main controlls
+    public int minGasFanatec;  //David added to account for masterSteeringDifference while preering main controlls
+    public int maxBrakeFanatec; //David added to account for masterSteeringDifference while preering main controlls
+    public int minBrakeFanatec; //David added to account for masterSteeringDifference while preering main controlls
     public float FFBMultiplier;
 }
 #endregion

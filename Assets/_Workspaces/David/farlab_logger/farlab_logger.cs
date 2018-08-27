@@ -229,10 +229,10 @@ public class farlab_logger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        vel.SetVal(GetVelocity(player).ToString());
+        vel.SetVal(GetVelocity().ToString());
         time.SetVal(GetTime().ToString());
         frame.SetVal(GetFrame().ToString());
-        sp.SetVal(GetVelocity(player).magnitude.ToString());
+        sp.SetVal(GetVelocity().magnitude.ToString());
         dist.SetVal(GetPos(player).magnitude.ToString());
 
         //Step 3 - Set values of LogVariable objects
@@ -349,9 +349,9 @@ public class farlab_logger : MonoBehaviour
                    
     }
     //Getting the velocity of the object
-    Vector3 GetVelocity(GameObject obj)
+    Vector3 GetVelocity()
     {
-        return obj.transform.GetComponent<Rigidbody>().velocity;
+        return TrackController.Instance.car.transform.GetComponent<Rigidbody>().velocity;
     }
 
     //Getting the position of the object
