@@ -15,15 +15,18 @@ public class AdditionalSceneLoader : MonoBehaviour {
     }
     void Update()
     {
-
-        if (!loaded && AppController.Instance.sceneSelected)
+        if (loadAdditionalScene)
         {
-            loaded = true;
-            // Use a coroutine to load the Scene in the background
-            Debug.Log("about to lead in the additional scene ");
-            if (AdditionalSceneName.Length > 0) { 
-            	StartCoroutine(LoadYourAsyncScene());
-        	}
+            if (!loaded && AppController.Instance.sceneSelected)
+            {
+                loaded = true;
+                // Use a coroutine to load the Scene in the background
+                Debug.Log("about to lead in the additional scene ");
+                if (AdditionalSceneName.Length > 0)
+                {
+                    StartCoroutine(LoadYourAsyncScene());
+                }
+            }
         }
     }
 
