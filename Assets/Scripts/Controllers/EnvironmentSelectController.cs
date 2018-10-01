@@ -337,5 +337,9 @@ public class EnvironmentSelectController : BaseSelectController {
 
         base.OnSelectConfirm();
     }
+	public bool getFinished(){
+		return finished;
+
+	}
 
 }
