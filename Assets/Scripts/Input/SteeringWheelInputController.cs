@@ -334,113 +334,103 @@ public void InitSpringForce(int sat, int coeff)
 
 
 
+		if (Application.platform != RuntimePlatform.OSXEditor) {
+			DirectInputWrapper.Update ();
 
-        DirectInputWrapper.Update();
+			{
 
-        {
-
-            DeviceState state;
-            DeviceState slaveState;
+				DeviceState state;
+				DeviceState slaveState;
 
            
-            if (MasterSteeringWheel) { 
-                state = DirectInputWrapper.GetStateManaged(masterIndex);
-                slaveState = DirectInputWrapper.GetStateManaged(wheelIndex);
-                slaveSteering = slaveState.lX / 32768f;
-            }
-            else{
+				if (MasterSteeringWheel) { 
+					state = DirectInputWrapper.GetStateManaged (masterIndex);
+					slaveState = DirectInputWrapper.GetStateManaged (wheelIndex);
+					slaveSteering = slaveState.lX / 32768f;
+				} else {
                
-                state = DirectInputWrapper.GetStateManaged(wheelIndex);
-            }
+					state = DirectInputWrapper.GetStateManaged (wheelIndex);
+				}
 
-            steerInput = state.lX / 32768f;
-            accelInput = state.rglSlider[0] / -32768f;
+				steerInput = state.lX / 32768f;
+				accelInput = state.rglSlider [0] / -32768f;
            
 
-            // Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
+				// Debug.Log("Device One: \tlRx: " + state.lRx + "\tlRy: " + state.lRy + "\tlRz: " + state.lRz + "\tlX: " + state.lX + "\tlY: " + state.lY + "\tlZ: " + state.lZ);
 
 
-            /* x = state.lX;
+				/* x = state.lX;
              y = state.lY;
              z = state.lZ;
              s0 = state.rglSlider[0];
              s1 = state.rglSlider[1];*/
-            if (forceFeedbackPlaying)
-            {
-                if (MasterSteeringWheel)
-                {
-                    DirectInputWrapper.PlayConstantForce(masterIndex, Mathf.RoundToInt(constant * FFBGain));
-                    DirectInputWrapper.PlayDamperForce(masterIndex, Mathf.RoundToInt(damper * FFBGain));
-                    DirectInputWrapper.PlaySpringForce(masterIndex, 0, Mathf.RoundToInt(springSaturation * FFBGain), springCoefficient);
+				if (forceFeedbackPlaying) {
+					if (MasterSteeringWheel) {
+						DirectInputWrapper.PlayConstantForce (masterIndex, Mathf.RoundToInt (constant * FFBGain));
+						DirectInputWrapper.PlayDamperForce (masterIndex, Mathf.RoundToInt (damper * FFBGain));
+						DirectInputWrapper.PlaySpringForce (masterIndex, 0, Mathf.RoundToInt (springSaturation * FFBGain), springCoefficient);
 
-                    DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(slaveConstant * FFBGain));
-                    DirectInputWrapper.PlayDamperForce(wheelIndex, Mathf.RoundToInt(slaveDamper * FFBGain));
-                    DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(slaveSpringSaturation * FFBGain), slaveSpringCoefficient);
+						DirectInputWrapper.PlayConstantForce (wheelIndex, Mathf.RoundToInt (slaveConstant * FFBGain));
+						DirectInputWrapper.PlayDamperForce (wheelIndex, Mathf.RoundToInt (slaveDamper * FFBGain));
+						DirectInputWrapper.PlaySpringForce (wheelIndex, 0, Mathf.RoundToInt (slaveSpringSaturation * FFBGain), slaveSpringCoefficient);
 
 
-                }
-                else
-                {
-                    DirectInputWrapper.PlayConstantForce(wheelIndex, Mathf.RoundToInt(constant * FFBGain));
-                    DirectInputWrapper.PlayDamperForce(wheelIndex, Mathf.RoundToInt(damper * FFBGain));
-                    DirectInputWrapper.PlaySpringForce(wheelIndex, 0, Mathf.RoundToInt(springSaturation * FFBGain), springCoefficient);
-                }
+					} else {
+						DirectInputWrapper.PlayConstantForce (wheelIndex, Mathf.RoundToInt (constant * FFBGain));
+						DirectInputWrapper.PlayDamperForce (wheelIndex, Mathf.RoundToInt (damper * FFBGain));
+						DirectInputWrapper.PlaySpringForce (wheelIndex, 0, Mathf.RoundToInt (springSaturation * FFBGain), springCoefficient);
+					}
 
-            }
-            if(DirectInputWrapper.DevicesCount() > 1 || MasterSteeringWheel)
-            {
+				}
+				if (DirectInputWrapper.DevicesCount () > 1 || MasterSteeringWheel) {
 
-                int gas = 0;
-                int brake = 0;
-                if (DirectInputWrapper.DevicesCount() > 1 && !MasterSteeringWheel)
-                {
-                    DeviceState state2 = DirectInputWrapper.GetStateManaged(pedalIndex);
-                    /* x2 = state2.lX;
+					int gas = 0;
+					int brake = 0;
+					if (DirectInputWrapper.DevicesCount () > 1 && !MasterSteeringWheel) {
+						DeviceState state2 = DirectInputWrapper.GetStateManaged (pedalIndex);
+						/* x2 = state2.lX;
                      y2 = state2.lY;
                      z2 = state2.lZ;
                      s02 = state2.rglSlider[0];
                      s12 = state2.rglSlider[1];*/
-                    switch (gasAxis)
-                    {
-                        case "X":
-                            gas = state2.lX;
-                            break;
-                        case "Y":
-                            gas = state2.lY;
-                            break;
-                        case "Z":
-                            gas = state2.lZ;
-                            break;
-                    }
+						switch (gasAxis) {
+						case "X":
+							gas = state2.lX;
+							break;
+						case "Y":
+							gas = state2.lY;
+							break;
+						case "Z":
+							gas = state2.lZ;
+							break;
+						}
 
-                    switch (brakeAxis)
-                    {
-                        case "X":
-                            brake = state2.lX;
-                            break;
-                        case "Y":
-                            brake = state2.lY;
-                            break;
-                        case "Z":
-                            brake = state2.lZ;
-                            break;
-                    }
-                }
-                if (MasterSteeringWheel)
-                {
-                    brake = state.lRz;
-                    gas = state.lY;
+						switch (brakeAxis) {
+						case "X":
+							brake = state2.lX;
+							break;
+						case "Y":
+							brake = state2.lY;
+							break;
+						case "Z":
+							brake = state2.lZ;
+							break;
+						}
+					}
+					if (MasterSteeringWheel) {
+						brake = state.lRz;
+						gas = state.lY;
 
-                }
-                //Debug.Log(brake.ToString() + " break and gas" + gas.ToString());
-                float totalGas = (maxGas - minGas);
-                float totalBrake = (maxBrake - minBrake);
+					}
+					//Debug.Log(brake.ToString() + " break and gas" + gas.ToString());
+					float totalGas = (maxGas - minGas);
+					float totalBrake = (maxBrake - minBrake);
 
-                accelInput = (gas - minGas) / totalGas - (brake - minBrake) / totalBrake;
-            }
-        }
+					accelInput = (gas - minGas) / totalGas - (brake - minBrake) / totalBrake;
+				}
+			}
 
-
+		}
     }
 
     public override float GetAccelBrakeInput()

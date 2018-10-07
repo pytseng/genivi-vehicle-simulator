@@ -39,6 +39,7 @@ public class AppController : PersistentUnitySingleton<AppController>
     private InputController backupInput;
 
     public SessionSettings currentSessionSettings = new SessionSettings();
+	public bool sceneSelected = false;
 
     protected override void Awake()
     {
@@ -122,27 +123,33 @@ public class AppController : PersistentUnitySingleton<AppController>
 #pragma warning disable 0618
     public void LoadEnvironmentSelect()
     {
-        Application.LoadLevel(appSettings.environmentSelectScene);
+		sceneSelected = false;
+
+		Application.LoadLevel(appSettings.environmentSelectScene);
     }
 
     public void LoadCarSelect()
     {
-        Application.LoadLevel(appSettings.carSelectScene);
+		sceneSelected = false;
+		Application.LoadLevel(appSettings.carSelectScene);
     }
 
     public void LoadRoadSideSelect()
     {
-        Application.LoadLevel(appSettings.roadSideSelectScene);
+		sceneSelected = false;
+		Application.LoadLevel(appSettings.roadSideSelectScene);
     }
 
     public void LoadBrandSelect()
     {
-        Application.LoadLevel(appSettings.brandSelectScene);
+		sceneSelected = false;
+		Application.LoadLevel(appSettings.brandSelectScene);
     }
 
     public void LoadDrivingScene(string sceneName)
     {
-        Application.LoadLevel(sceneName);
+		sceneSelected = true;
+		Application.LoadLevel(sceneName);
     }
 
     public void LoadDrivingScene(Environment environment)

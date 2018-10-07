@@ -7,25 +7,40 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: Assets/_Workspaces/Simon/remoteadmin.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/TestDrive2.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/_Workspaces/Simon/testdriveyos.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/TestDrive2.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/_Workspaces/Simon/fmod/testdrivefmod.unity
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Loader.unity
+    guid: e55e361b8ea36a540bb655975e897b7c
   - enabled: 1
     path: Assets/Scenes/NewCarSelect_2.unity
+    guid: 57d54604195350e40ad5d99e9099dc3e
   - enabled: 0
     path: Assets/Scenes/NewCarSelect.unity
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/CarSelect.unity
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/_Workspaces/far-lab/David/AdditionalSceneTest.unity
+    guid: 14de1dfaf5da141e4946174003b4abc0
   - enabled: 1
     path: Assets/Scenes/Environment_Yosemite.unity
+    guid: d716c340613e94049a6769007866a44a
   - enabled: 1
     path: Assets/Scenes/Environment_SanFrancisco02.unity
+    guid: 99f555df89caf93439a8c9239c801519
   - enabled: 1
     path: Assets/Scenes/Environment_PCH.unity
+    guid: 42475b2f455e00143bc0fcdf0ba8d9b0

@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "dependencies": {
     "com.unity.ads": "2.0.8",
     "com.unity.analytics": "2.0.16",
@@ -36,4 +37,8 @@
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
   }
+=======
+	"dependencies": {
+	}
+>>>>>>> 60893e6f4693635c8cef57839f52c42f8add7bc4
 }
