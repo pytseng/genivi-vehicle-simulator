@@ -7,7 +7,7 @@ public class CameraCulling : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		float[] distances = new float[32];
-		distances[19] = 50;
+		distances[19] = 100;
 		Camera.main.layerCullDistances = distances;
 	}
 
