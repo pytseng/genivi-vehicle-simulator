@@ -34,6 +34,11 @@ function BuildAndDeploy() {
 
 	Write-Host "Copying Console to remote machine.."
 
+    $pathExists = Test-Path -Path Y
+
+    if($pathExists){
+     Remove-PSDrive Y
+    }
 	#set up PSDrive for remote access
 	$SecurePassword = ConvertTo-SecureString -AsPlainText $Password -Force
 	$cred = New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $username, $SecurePassword

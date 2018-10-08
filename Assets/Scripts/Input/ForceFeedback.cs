@@ -112,11 +112,11 @@ public class ForceFeedback : MonoBehaviour
                     logi.SetSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(forceFeedback) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
                     logi.SetDamperForce(damperAmount);
                 }
-                else
+                else //this is if we have a mster steering wheel
                 {
                     //
                    
-                    logi.SetConstantForce((int)(forceFeedback * 10000f));
+                    logi.SetConstantForce((int)(forceFeedback * 10000f));///DAVID HERE
                     logi.SetSpringForce(Mathf.RoundToInt(springSaturation * Mathf.Abs(forceFeedback) * 10000f), Mathf.RoundToInt(springCoeff * 10000f));
                     logi.SetDamperForce(damperAmount);
 
