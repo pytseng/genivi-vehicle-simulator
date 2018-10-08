@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public class Stoppings : MonoBehaviour
 {
 
-    private UnityEvent stopEvent;
     private GameObject player;
     private bool eventHappened; 
 
@@ -21,34 +20,15 @@ public class Stoppings : MonoBehaviour
 
 
 
-
-
     // Use this for initialization
     private void Awake()
     {
         targetObjectName = "XE_Rigged(Clone)";
-        eventName = "none";
     }
     void Start()
     {
-        eventHappened = false; 
-        if (stopEvent == null)
-            stopEvent = new UnityEvent();
-        switch (eventName)
-        {
-            case "jaywalk":
-                stopEvent.AddListener(_JayWalk);
-                break;
-            case "car cut in lane":
-                break;
-            case "red light":
-                break;
-            case "short of power":
-                break;
-            case "none":
-                Debug.Log("no event");
-                break;
-        }
+        eventHappened = false;
+        player = _GetTargetObeject(targetObjectName);
     }
 
     // Update is called once per frame
@@ -57,7 +37,24 @@ public class Stoppings : MonoBehaviour
         float dist = _DistanceDetection(targetObjectName);
         if (eventHappened == false && dist < targetObjectApproachDistance)
         {
-            stopEvent.Invoke();
+
+            switch (eventName)
+            {
+                case "jaywalk":
+                    _JayWalk(player);
+                    break;
+                case "car cut in lane":
+                    _CarCutInLane();
+                    break;
+                case "red light":
+                    _RedLight();
+                    break;
+                case "short of power":
+                    break;
+                case "none":
+                    Debug.Log("no event");
+                    break;
+            }
             eventHappened = true;
         }
     }
@@ -75,15 +72,8 @@ public class Stoppings : MonoBehaviour
         return dist;
     }
 
-    //private _spawnEventObject()
-    //{
 
-    //}
-
-    private void _JayWalk(){
-        //Get player
-        player = _GetTargetObeject(targetObjectName);
-
+    private void _JayWalk(GameObject player){
         //play audio
         var alertClip = Resources.Load<AudioClip>("Audios/alert");
         AudioSource alert = player.AddComponent<AudioSource>() as AudioSource;
@@ -92,5 +82,13 @@ public class Stoppings : MonoBehaviour
         //load game object
         GameObject jayWalkerPrefab = Resources.Load("prefabs/Man") as GameObject;
         GameObject jayWalker = Instantiate(jayWalkerPrefab, this.transform.position, this.transform.rotation);
+    }
+
+    private void _CarCutInLane(){
+
+    }
+
+    private void _RedLight(){
+
     }
 }
