@@ -67,7 +67,8 @@ public class Stoppings : MonoBehaviour
 
     private float _DistanceDetection(string stringName)
     {
-        player = GameObject.Find(stringName);
+       // player = GameObject.Find(stringName);
+        player = FindObjectOfType<VehicleController>().gameObject;
         float dist = Vector3.Distance(player.transform.position, this.transform.position);
         return dist;
     }
@@ -75,6 +76,7 @@ public class Stoppings : MonoBehaviour
 
     private void _JayWalk(GameObject player){
         //play audio
+        Debug.Log("We juust started the JayWalk script. Shpould happen when crossing a red light!");
         var alertClip = Resources.Load<AudioClip>("Audios/alert");
         AudioSource alert = player.AddComponent<AudioSource>() as AudioSource;
         player.GetComponent<AudioSource>().PlayOneShot(alertClip, 1.0f);
