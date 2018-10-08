@@ -7,7 +7,7 @@ public class Stoppings : MonoBehaviour
 {
 
     private UnityEvent stopEvent;
-    private GameObject target;
+    private GameObject player;
     private bool eventHappened; 
 
     [SerializeField]
@@ -26,11 +26,12 @@ public class Stoppings : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-
+        targetObjectName = "XE_Rigged(Clone)";
+        eventName = "none";
     }
     void Start()
     {
-        eventHappened = false;
+        eventHappened = false; 
         if (stopEvent == null)
             stopEvent = new UnityEvent();
         switch (eventName)
@@ -43,6 +44,9 @@ public class Stoppings : MonoBehaviour
             case "red light":
                 break;
             case "short of power":
+                break;
+            case "none":
+                Debug.Log("no event");
                 break;
         }
     }
@@ -58,10 +62,16 @@ public class Stoppings : MonoBehaviour
         }
     }
 
+    private GameObject _GetTargetObeject (string stringName){
+        //player = GameObject.Find(stringName);
+        player = FindObjectOfType<VehicleController>().gameObject;
+        return player;
+    }
+
     private float _DistanceDetection(string stringName)
     {
-        target = GameObject.Find(stringName);
-        float dist = Vector3.Distance(target.transform.position, this.transform.position);
+        player = GameObject.Find(stringName);
+        float dist = Vector3.Distance(player.transform.position, this.transform.position);
         return dist;
     }
 
@@ -71,6 +81,15 @@ public class Stoppings : MonoBehaviour
     //}
 
     private void _JayWalk(){
+        //Get player
+        player = _GetTargetObeject(targetObjectName);
+
+        //play audio
+        var alertClip = Resources.Load<AudioClip>("Audios/alert");
+        AudioSource alert = player.AddComponent<AudioSource>() as AudioSource;
+        player.GetComponent<AudioSource>().PlayOneShot(alertClip, 1.0f);
+
+        //load game object
         GameObject jayWalkerPrefab = Resources.Load("prefabs/Man") as GameObject;
         GameObject jayWalker = Instantiate(jayWalkerPrefab, this.transform.position, this.transform.rotation);
     }
