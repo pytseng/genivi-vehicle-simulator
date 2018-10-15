@@ -43,6 +43,9 @@ public class Stoppings : MonoBehaviour
                 case "jaywalk":
                     _JayWalk(player);
                     break;
+                case "Arriving destination":
+                    _ArrivingDestination(player);
+                    break;
                 case "car cut in lane":
                     _CarCutInLane();
                     break;
@@ -74,14 +77,14 @@ public class Stoppings : MonoBehaviour
 
 
     private void _JayWalk(GameObject player){
-        //play audio
-        var alertClip = Resources.Load<AudioClip>("Audios/alert");
-        AudioSource alert = player.AddComponent<AudioSource>() as AudioSource;
-        player.GetComponent<AudioSource>().PlayOneShot(alertClip, 1.0f);
-
+        //load and play audio
+        LoadAndPlaySoundToObject(player, "alert");
         //load game object
-        GameObject jayWalkerPrefab = Resources.Load("prefabs/Man") as GameObject;
-        GameObject jayWalker = Instantiate(jayWalkerPrefab, this.transform.position, this.transform.rotation);
+        LoadSpawnObject(player, "Man");
+    }
+
+    private void _ArrivingDestination(GameObject player){
+        LoadAndPlaySoundToObject(player, "arrivingDestination");
     }
 
     private void _CarCutInLane(){
@@ -91,4 +94,18 @@ public class Stoppings : MonoBehaviour
     private void _RedLight(){
 
     }
+
+    private void LoadAndPlaySoundToObject(GameObject player, string soundFile)
+    {
+        var audioClip = Resources.Load<AudioClip>("Audios/" + soundFile);
+        AudioSource audioSource = player.AddComponent<AudioSource>() as AudioSource;
+        player.GetComponent<AudioSource>().PlayOneShot(audioClip, 1.0f);
+    }
+
+    private void LoadSpawnObject(GameObject player, string prefabName)
+    {
+        GameObject prefab = Resources.Load("prefabs/" + prefabName) as GameObject;
+        GameObject prefabInstantiate = Instantiate(prefab, player.transform.position, player.transform.rotation);
+    }
+
 }
