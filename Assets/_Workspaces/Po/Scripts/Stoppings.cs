@@ -5,14 +5,15 @@ using UnityEngine.Events;
 
 public class Stoppings : MonoBehaviour
 {
-
+    TrafSpawner trafspawner;
     private GameObject player;
     private bool eventHappened; 
+    
 
     [SerializeField]
     private string eventName;
-    [SerializeField]
-    private string targetObjectName; //XE_Rigged(Clone) is the name of the spawned car
+    //[SerializeField]
+    //private string targetObjectName; //XE_Rigged(Clone) is the name of the spawned car
     [SerializeField]
     private float targetObjectApproachDistance;
     [SerializeField]
@@ -23,74 +24,55 @@ public class Stoppings : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-        targetObjectName = "XE_Rigged(Clone)";
+        //targetObjectName = "XE_Rigged(Clone)";
     }
     void Start()
     {
         eventHappened = false;
-        player = _GetTargetObeject(targetObjectName);
+        player = _GetTargetObeject();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float dist = _DistanceDetection(targetObjectName);
+        float dist = _DistanceDetection();
         if (eventHappened == false && dist < targetObjectApproachDistance)
         {
-
-            switch (eventName)
-            {
-                case "jaywalk":
-                    _JayWalk(player);
-                    break;
-                case "Arriving destination":
-                    _ArrivingDestination(player);
-                    break;
-                case "car cut in lane":
-                    _CarCutInLane();
-                    break;
-                case "red light":
-                    _RedLight();
-                    break;
-                case "short of power":
-                    break;
-                case "none":
-                    Debug.Log("no event");
-                    break;
-            }
+            StartCoroutine(StartEvent(eventName));
             eventHappened = true;
         }
     }
 
-    private GameObject _GetTargetObeject (string stringName){
-        //player = GameObject.Find(stringName);
+    private GameObject _GetTargetObeject (){
         player = FindObjectOfType<VehicleController>().gameObject;
         return player;
     }
 
-    private float _DistanceDetection(string stringName)
-    {
-       // player = GameObject.Find(stringName);
+    private float _DistanceDetection(){
         player = FindObjectOfType<VehicleController>().gameObject;
         float dist = Vector3.Distance(player.transform.position, this.transform.position);
         return dist;
     }
 
 
-    private void _JayWalk(GameObject player){
+    private void _Jaywalker(GameObject player){
         //load and play audio
-        LoadAndPlaySoundToObject(player, "alert");
+        LoadAndPlaySoundToObject(player, "jaywalker");
         Debug.Log("We juust started the JayWalk script. Shpould happen when crossing a red light!");
         //load game object
-        LoadSpawnObject(player, "Man");
+        LoadSpawnObject(this.gameObject.transform, "man");
     }
 
     private void _ArrivingDestination(GameObject player){
         LoadAndPlaySoundToObject(player, "arrivingDestination");
     }
 
-    private void _CarCutInLane(){
-
+    private void _CarCutInLane(GameObject player)
+    {
+        LoadAndPlaySoundToObject(player, "carCutInLane");
+        GameObject carCutIn = LoadSpawnObject(player.transform, "cutInCar", new Vector3(30,0,10));
+        //StartCoroutine(CutInLane(carCutIn.transform));
+        trafspawner.Spawn();
     }
 
     private void _RedLight(){
@@ -104,10 +86,54 @@ public class Stoppings : MonoBehaviour
         player.GetComponent<AudioSource>().PlayOneShot(audioClip, 1.0f);
     }
 
-    private void LoadSpawnObject(GameObject player, string prefabName)
+    private GameObject LoadSpawnObject(Transform eventLocationTransform, string prefabName, Vector3 positionAway = new Vector3())
     {
         GameObject prefab = Resources.Load("prefabs/" + prefabName) as GameObject;
-        GameObject prefabInstantiate = Instantiate(prefab, player.transform.position, player.transform.rotation);
+        GameObject prefabInstantiate = Instantiate(prefab, eventLocationTransform.position + positionAway, eventLocationTransform.rotation);
+        return prefabInstantiate;
     }
+
+    //Coroutines
+
+    IEnumerator StartEvent(string eventName)
+    {
+        switch (eventName)
+        {
+            case "Jaywalker":
+                _Jaywalker(player);
+                break;
+            case "ArrivingDestination":
+                _ArrivingDestination(player);
+                break;
+            case "CarCutInLane":
+                _CarCutInLane(player);
+                break;
+            case "RedLight":
+                _RedLight();
+                break;
+            case "ShortOfPower":
+                break;
+            case "None":
+                Debug.Log("no event");
+                break;
+        }
+        yield return new WaitForEndOfFrame();
+    }
+
+
+    IEnumerator CutInLane(Transform cutInCarTransform){
+        var start_pos = cutInCarTransform.position;
+        var end_pos = start_pos + new Vector3 (20,0,-14);
+        float step = (0.04f / (start_pos - end_pos).magnitude) * Time.fixedDeltaTime;
+        float t = 0;
+        {
+            t += step;
+            cutInCarTransform.position = Vector3.Lerp(start_pos, end_pos, t);
+            yield return new WaitForEndOfFrame();
+        }
+        cutInCarTransform.position = end_pos;
+    }
+
+
 
 }
