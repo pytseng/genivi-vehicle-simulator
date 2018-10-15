@@ -1,0 +1,181 @@
+fileFormatVersion: 2
+guid: 68141e961d21c46d1b22f9844b929ad2
+SketchUpImporter:
+  generateBackFace: 0
+  mergeCoplanarFaces: 0
+  selectedNodes: 00000000010000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000
+  assetHash:
+    serializedVersion: 2
+    Hash: c6dff3daff0ab619719db10af1e2cbc8
+  longitude: 153.03845198152
+  latitude: -27.485914124233
+  northCorrection: -0
+  fileUnit: 0
+  sketchUpImportData:
+    defaultCamera:
+      position: {x: 194.33902, y: 100.97336, z: -128.3502}
+      lookAt: {x: -268.22415, y: -110.26414, z: 176.18738}
+      up: {x: -0.29766142, y: 0.9343409, z: 0.19597128}
+      fov: 35
+      aspectRatio: 0
+      orthoSize: 1
+      isPerspective: 1
+    scenes: []
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Google Earth Snapshot
+    100004: Group 10
+    100006: Group 12
+    100008: Group 14
+    100010: Group 6
+    100012: Group 8
+    400000: //RootNode
+    400002: Google Earth Snapshot
+    400004: Group 10
+    400006: Group 12
+    400008: Group 14
+    400010: Group 6
+    400012: Group 8
+    2100000: _defaultMat
+    2100002: Comalco_Ribbed
+    2100004: seat3
+    2100006: seats
+    2100008: grid simple
+    2100010: grid crossing
+    2100012: SUNCOP005
+    2100014: glass-1
+    2100016: SUNCOP015
+    2100018: ground
+    2100020: roof
+    2100022: _2
+    2100024: '[Vegetation_Grass1]'
+    2100026: roof 03_
+    2100028: _3
+    2100030: Concrete_Form_6x12
+    2100032: Metal_Grate
+    2100034: Concrete_Brushed_Orange
+    2100036: Concrete_Rough
+    2100038: Concrete_Scored_Brick_Gray
+    2100040: Concrete_Brushed
+    2100042: "barrie\u0300re"
+    2100044: Lions
+    2100046: _Charcoal_
+    2100048: '[Concrete_Form_4x8]'
+    2100050: screen
+    2100052: Roof02
+    2100054: flags
+    2100056: glass1
+    2100058: _6
+    2100060: Gabba_logo_web2
+    2100062: station 7
+    2100064: '[Metal_Steel_Textured_White]'
+    2100066: _13
+    2100068: _11
+    2100070: _9
+    2100072: Google Earth Snapshot1
+    2100074: WaterfrontPlace_Cladding1
+    2100076: "barrie\u0300re2"
+    2100078: roof1
+    2100080: _4
+    2100082: 472138
+    2100084: 470793
+    2300000: //RootNode
+    2300002: Google Earth Snapshot
+    2300004: Group 10
+    2300006: Group 12
+    2300008: Group 14
+    2300010: Group 6
+    2300012: Group 8
+    3300000: //RootNode
+    3300002: Google Earth Snapshot
+    3300004: Group 10
+    3300006: Group 12
+    3300008: Group 14
+    3300010: Group 6
+    3300012: Group 8
+    4300000: Mesh 3d-model
+    4300002: Mesh Google Earth Snapshot
+    4300004: Mesh Group 6
+    4300006: Mesh Group 10
+    4300008: Mesh stadium
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 2
+    materialSearch: 0
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.0254
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

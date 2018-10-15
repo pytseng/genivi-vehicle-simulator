@@ -80,6 +80,18 @@ public class Stoppings : MonoBehaviour
 
     }
 
+    private void _Market(GameObject player){
+        LoadAndPlaySoundToObject(player, "approachMarket");
+    }
+    private void _Rain(GameObject player)
+    {
+        LoadAndPlaySoundToObject(player, "rain");
+    }
+    private void _Stadium(GameObject player)
+    {
+        LoadAndPlaySoundToObject(player, "stadium");
+    }
+
     private void LoadAndPlaySoundToObject(GameObject player, string soundFile)
     {
         var audioClip = Resources.Load<AudioClip>("Audios/" + soundFile);
@@ -114,9 +126,19 @@ public class Stoppings : MonoBehaviour
                 break;
             case "ShortOfPower":
                 break;
+            case "Market":
+                _Market(player);
+                break;
+            case "Rain":
+                _Rain(player);
+                break;
+            case "Stadium":
+                _Stadium(player);
+                break;
             case "None":
                 Debug.Log("no event");
                 break;
+            
         }
         yield return new WaitForEndOfFrame();
     }
