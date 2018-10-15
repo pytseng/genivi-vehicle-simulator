@@ -71,8 +71,9 @@ public class Stoppings : MonoBehaviour
     {
         LoadAndPlaySoundToObject(player, "carCutInLane");
         GameObject carCutIn = LoadSpawnObject(player.transform, "cutInCar", new Vector3(30,0,10));
-        //StartCoroutine(CutInLane(carCutIn.transform));
-        trafspawner.Spawn();
+        StartCoroutine(CutInLane(carCutIn.transform));
+        //trafspawner.Spawn();
+
     }
 
     private void _RedLight(){
@@ -123,10 +124,10 @@ public class Stoppings : MonoBehaviour
 
     IEnumerator CutInLane(Transform cutInCarTransform){
         var start_pos = cutInCarTransform.position;
-        var end_pos = start_pos + new Vector3 (20,0,-14);
-        float step = (0.04f / (start_pos - end_pos).magnitude) * Time.fixedDeltaTime;
+        var end_pos = start_pos + new Vector3 (40,0,-10);
+        float step = (100f / (start_pos - end_pos).magnitude) * Time.fixedDeltaTime;
         float t = 0;
-        {
+        while(t <= 1.0f){
             t += step;
             cutInCarTransform.position = Vector3.Lerp(start_pos, end_pos, t);
             yield return new WaitForEndOfFrame();
