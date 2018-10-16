@@ -47,3 +47,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Environment_PCH.unity
     guid: 42475b2f455e00143bc0fcdf0ba8d9b0
+  - enabled: 1
+    path: Assets/_Workspaces/far-lab/Reviews/Reviews.unity
+    guid: b84122471127e42b18ec27e3ef2f5384
