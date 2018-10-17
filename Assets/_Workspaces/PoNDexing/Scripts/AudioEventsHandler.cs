@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Stoppings : MonoBehaviour
+public class AudioEventsHandler : MonoBehaviour
 {
     TrafSpawner trafspawner;
     private GameObject player;
@@ -86,6 +86,7 @@ public class Stoppings : MonoBehaviour
     private void _Rain(GameObject player)
     {
         LoadAndPlaySoundToObject(player, "rain");
+        GameObject rain = LoadSpawnObject(this.gameObject.transform, "RainEvent");
     }
     private void _Stadium(GameObject player)
     {
@@ -140,6 +141,7 @@ public class Stoppings : MonoBehaviour
                 break;
             
         }
+        print(eventName + " is triggered");
         yield return new WaitForEndOfFrame();
     }
 

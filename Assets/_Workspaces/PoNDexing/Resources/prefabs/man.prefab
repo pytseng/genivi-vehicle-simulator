@@ -2570,7 +2570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offRoadDistance: 6
-  triggerDistance: 30
+  triggerDistance: 60
   passDistance: 1
   spawnInLane: 0
   spawnAnywhere: 0
