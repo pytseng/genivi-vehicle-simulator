@@ -86,7 +86,7 @@ public class AudioEventsHandler : MonoBehaviour
     private void _Rain(GameObject player)
     {
         LoadAndPlaySoundToObject(player, "rain");
-        GameObject rain = LoadSpawnObject(this.gameObject.transform, "RainEvent");
+        GameObject rain = LoadSpawnObject(this.gameObject.transform, "Rain");
     }
     private void _Stadium(GameObject player)
     {
