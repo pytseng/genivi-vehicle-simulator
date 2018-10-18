@@ -9,45 +9,45 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1199113554157304}
+  m_RootGameObject: {fileID: 1291490127210296}
   m_IsPrefabParent: 1
---- !u!1 &1199113554157304
+--- !u!1 &1291490127210296
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4390918661091982}
-  - component: {fileID: 198262723115362830}
-  - component: {fileID: 199189717532146462}
-  - component: {fileID: 182172831987152706}
+  - component: {fileID: 4541302012935056}
+  - component: {fileID: 198626039082259192}
+  - component: {fileID: 199265442512130650}
+  - component: {fileID: 182468623754126518}
   m_Layer: 0
-  m_Name: RainEvent
+  m_Name: Rain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4390918661091982
+--- !u!4 &4541302012935056
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199113554157304}
+  m_GameObject: {fileID: 1291490127210296}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1246.706, y: 43.4, z: 374.56503}
-  m_LocalScale: {x: 20, y: 5, z: 5}
+  m_LocalPosition: {x: 1596.0073, y: 10.2366, z: 358.09198}
+  m_LocalScale: {x: 20, y: 5, z: 8}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!182 &182172831987152706
+--- !u!182 &182468623754126518
 WindZone:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199113554157304}
+  m_GameObject: {fileID: 1291490127210296}
   m_Enabled: 0
   m_Mode: 0
   m_Radius: 20
@@ -55,14 +55,14 @@ WindZone:
   m_WindTurbulence: 1
   m_WindPulseMagnitude: 0.5
   m_WindPulseFrequency: 0.01
---- !u!198 &198262723115362830
+--- !u!198 &198626039082259192
 ParticleSystem:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199113554157304}
+  m_GameObject: {fileID: 1291490127210296}
   serializedVersion: 5
-  lengthInSec: 10
+  lengthInSec: 70
   simulationSpeed: 1
   stopAction: 2
   looping: 0
@@ -564,9 +564,9 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
     donutRadius: 0.2
-    m_Position: {x: 14, y: 5, z: 0}
+    m_Position: {x: 12, y: 4, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 15, y: 0, z: 10}
+    m_Scale: {x: 15, y: 5, z: 18}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -675,7 +675,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 50
+      scalar: 200
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -3416,13 +3416,13 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!199 &199189717532146462
+--- !u!199 &199265442512130650
 ParticleSystemRenderer:
   serializedVersion: 4
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199113554157304}
+  m_GameObject: {fileID: 1291490127210296}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
