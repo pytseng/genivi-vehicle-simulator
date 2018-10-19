@@ -12,7 +12,7 @@ public class CarConsoleController : MonoBehaviour {
 
     public CarConsole console;
     public int consoleID;
-    private NetworkView view;
+    //private NetworkView view;
 
     private float speed;
     private float rpm;
