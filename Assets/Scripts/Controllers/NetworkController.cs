@@ -26,16 +26,16 @@ public class NetworkSettings
         //clientIp = "192.168.178.29";
         //altClientIP = "127.0.0.1";
 
-        //hostIp = "192.168.50.199";
-        //clientIp = "192.168.50.164";
-        //eventClientIP = "127.0.0.1";
-        //altClientIP = "192.168.50.123";
-
-
-        hostIp = "127.0.0.1";
-        clientIp = "127.0.0.1";
+        hostIp = "192.168.50.199";
+        clientIp = "192.168.50.164";
         eventClientIP = "127.0.0.1";
-        altClientIP = "127.0.0.1";
+        altClientIP = "192.168.50.123";
+
+
+        //hostIp = "127.0.0.1";
+        //clientIp = "127.0.0.1";
+        //eventClientIP = "127.0.0.1";
+        //altClientIP = "127.0.0.1";
 
     }
 
@@ -65,7 +65,7 @@ public class NetworkSettings
             return (NetworkSettings)ser.Deserialize(reader);
         }
         catch (System.Exception e)
-        {      
+        {
             Debug.LogWarning("error reading network settings, reverting to default: " + e.Message);
             return new NetworkSettings();
         }
@@ -73,7 +73,8 @@ public class NetworkSettings
     }
 }
 
-public class NetworkController : PersistentUnitySingleton<NetworkController> {
+public class NetworkController : PersistentUnitySingleton<NetworkController>
+{
 
     public bool isMaster = true;
 
@@ -91,9 +92,10 @@ public class NetworkController : PersistentUnitySingleton<NetworkController> {
     int channelId;
     int hostId;
     public static NetworkSettings settings;
+    bool connected = false;
 
-
-
+    Queue outQueue = new Queue();
+    private IEnumerator sender;
 
     protected override void Awake()
     {
@@ -114,7 +116,7 @@ public class NetworkController : PersistentUnitySingleton<NetworkController> {
         HostTopology topology = new HostTopology(config, 10);
 
         // Create a host based on the topology we just created, and bind the socket to port 12345.
-        hostId = NetworkTransport.AddHost(topology, 25552);
+        hostId = NetworkTransport.AddHost(topology, 25552); ///changed
 
         if (ShowBuild.GetBuildType() == "CONSOLE")
             isMaster = false;
@@ -123,80 +125,105 @@ public class NetworkController : PersistentUnitySingleton<NetworkController> {
         {
             byte error;
             connectionId = NetworkTransport.Connect(hostId, NetworkController.settings.clientIp, 25552, 0, out error);
-
+            Debug.Log(connectionId + ":connection" + hostId + ":hostId" + channelId + ":channelId and ip:\t" + NetworkController.settings.clientIp);
             Debug.Log(error);
 
+            sender = sendToClient(2.0f);
+            StartCoroutine(sender);
             //  Network.InitializeServer(1, 25552, false);
         }
         else
         {
+
+            byte error;
+            connectionId = NetworkTransport.Connect(hostId, NetworkController.settings.hostIp, 25552, 0, out error);
+            Debug.Log(connectionId + ":connection" + hostId + ":hostId" + channelId + ":channelId and ip:\t" + NetworkController.settings.clientIp);
+            Debug.Log(error);
             //We used to connect to the server  in this new case its the other way arround.
             //Debug.Log("connecting: " + Network.Connect(NetworkController.settings.hostIp, 25552));
         }
 
     }
-   
+
 
     public void Update()
     {
-        if (!isMaster && Input.GetKeyDown(KeyCode.Escape)) {
+        if (!isMaster && Input.GetKeyDown(KeyCode.Escape))
+        {
             Application.Quit();
         }
-        if(!isMaster){
 
-            //OnInitConsole(consoleNum);
-           //OnSelectCar(car);
+        Debug.developerConsoleVisible = true;
 
 
-            //These are the variables that are replaced by the incoming message
-            int outHostId;
-            int outConnectionId;
-            int outChannelId;
-            byte[] buffer = new byte[1024];
-            int receivedSize;
-            byte error;
+        int outHostId;
+        int outConnectionId;
+        int outChannelId;
+        byte[] buffer = new byte[1024];
+        int receivedSize;
+        byte error;
 
-            //Set up the Network Transport to receive the incoming message, and decide what type of event
-            NetworkEventType eventType = NetworkTransport.Receive(out outHostId, out outConnectionId, out outChannelId, buffer, buffer.Length, out receivedSize, out error);
+        //Set up the Network Transport to receive the incoming message, and decide what type of event
+        NetworkEventType eventType = NetworkTransport.Receive(out outHostId, out outConnectionId, out outChannelId, buffer, buffer.Length, out receivedSize, out error);
 
-            switch (eventType)
-            {
-                //Use this case when there is a connection detected
-                case NetworkEventType.ConnectEvent:
+        switch (eventType)
+        {
+            case NetworkEventType.ConnectEvent:
+                {
+                    if (outHostId == hostId &&
+                        outConnectionId == connectionId &&
+                        (NetworkError)error == NetworkError.Ok)
                     {
-                        //Call the function to deal with the received information
                         OnConnect(outHostId, outConnectionId, (NetworkError)error);
-                        break;
                     }
-
-                //This case is called if the event type is a data event, like the serialized message
-                case NetworkEventType.DataEvent:
+                    break;
+                }
+            case NetworkEventType.DisconnectEvent:
+                {
+                    if (outHostId == hostId &&
+                        outConnectionId == connectionId)
                     {
-                        //Call the function to deal with the received data
-                        OnData(outHostId, outConnectionId, outChannelId, buffer, receivedSize, (NetworkError)error);
-                        break;
+                        OnDisconnect(outHostId, outConnectionId, (NetworkError)error);
                     }
-
-                case NetworkEventType.Nothing:
                     break;
+                }
 
-                default:
-                    //Output the error
-                    Debug.LogError("Unknown network message type received: " + eventType);
+
+            //This case is called if the event type is a data event, like the serialized message
+            case NetworkEventType.DataEvent:
+                {
+                    Debug.Log("We just got Data in");
+
+                    //Call the function to deal with the received data
+                    OnData(outHostId, outConnectionId, outChannelId, buffer, receivedSize, (NetworkError)error);
+
                     break;
-            }
+                }
 
+            case NetworkEventType.Nothing:
+                break;
+
+            default:
+                //Output the error
+                Debug.LogError("Unknown network message type received: " + eventType);
+                break;
         }
+
+
     }
 
     //This function is called when a connection is detected
     void OnConnect(int hostID, int connectionID, NetworkError error)
     {
-        //Output the given information to the console
         Debug.Log("OnConnect(hostId = " + hostID + ", connectionId = "
             + connectionID + ", error = " + error.ToString() + ")");
-        //There was a connection, so make this return true
-       
+        connected = true;
+    }
+    void OnDisconnect(int hostID, int connectionID, NetworkError error)
+    {
+        Debug.Log("OnDisonnect(hostId = " + hostID + ", connectionId = "
+            + connectionID + ", error = " + error.ToString() + ")");
+        connected = false;
     }
 
     //This function is called when data is sent
@@ -206,16 +233,24 @@ public class NetworkController : PersistentUnitySingleton<NetworkController> {
         Stream serializedMessage = new MemoryStream(data);
         BinaryFormatter formatter = new BinaryFormatter();
         string message = formatter.Deserialize(serializedMessage).ToString();
-        if (message.StartsWith("i"))
+        Debug.Log(message);
+        string[] splitString = message.Split(',');
+        if (splitString.Length < 1)
+        {
+            Debug.LogError("ThisShould not happen I need more infor to change the screen");
+        }
+        if (splitString[0].Equals("i"))
         {
 
-            OnInitConsole(int.Parse(message.Substring(1, size - 1)));
+            OnInitConsole(int.Parse(splitString[1]));
         }
-        else if (message.StartsWith("s")){
+        else if (splitString[0].Equals("s"))
+        {
 
-            OnSelectCar(int.Parse(message.Substring(1, size - 1)));
+            OnSelectCar(int.Parse(splitString[1]));
         }
-        else{
+        else
+        {
             Debug.Log("I got something I am not sure if that works");
         }
 
@@ -225,45 +260,67 @@ public class NetworkController : PersistentUnitySingleton<NetworkController> {
             + connectionId + ", channelId = " + channelId + ", data = "
             + message + ", size = " + size + ", error = " + error.ToString() + ")");
 
-       // m_InputField.text = "data = " + message;
+
     }
 
-    //void OnApplicationQuit()
-    //{
-    //    byte error;
-    //    NetworkTransport.Disconnect(hostId, connectionId, out error);
-    //}
-#pragma warning disable 0618
-
-    private void sendToConsole(string ID,int num){
-
-        byte error;
-        byte[] buffer = new byte[1024];
-        Stream message = new MemoryStream(buffer);
-        BinaryFormatter formatter = new BinaryFormatter();
-        //Serialize the message
-
-        formatter.Serialize(message, ID+num.ToString());
-
-        //Send the message from the "client" with the serialized message and the connection information
-        NetworkTransport.Send(hostId, connectionId, channelId, buffer, (int)message.Position, out error);
-
-        //If there is an error, output message error to the console
-        if ((NetworkError)error != NetworkError.Ok)
+    private IEnumerator sendToClient(float waitTime)
+    {
+        while (true)
         {
-            Debug.Log("Message send error: " + (NetworkError)error);
+            if (outQueue.Count > 0 && connected)
+            {
+                string outputstring = outQueue.Dequeue() as string;
+                byte error;
+                byte[] buffer = new byte[1024];
+                Stream message = new MemoryStream(buffer);
+                BinaryFormatter formatter = new BinaryFormatter();
+                //Serialize the message
+
+                formatter.Serialize(message, outputstring);
+                Debug.Log(connectionId + ":connection" + hostId + ":hostId" + channelId + ":channelId");
+                //Send the message from the "client" with the serialized message and the connection information
+
+                NetworkTransport.Send(hostId, connectionId, channelId, buffer, (int)message.Position, out error);
+                //If there is an error, output message error to the console
+                if ((NetworkError)error != NetworkError.Ok)
+                {
+                    Debug.Log("Message send error: " + (NetworkError)error);
+                    Debug.Log("reque again send message ");
+                    outQueue.Enqueue(outputstring);
+                }
+            }
+
+            else if (outQueue.Count > 0 && !connected)
+            {
+                Debug.Log("We where trying to send somewthing while not beeing connected. This is not good. will try again next frame");
+                yield return new WaitForSeconds(waitTime / 10);
+
+            }
+            else
+            {
+                yield return new WaitForSeconds(waitTime);
+            }
+
         }
+    }
+
+    private void sendToConsole(string ID, int num)
+    {
+        string outString = ID + "," + num.ToString();
+        outQueue.Enqueue(outString);
+
+
     }
     public void SelectCar(int car)
     {
         sendToConsole("s", car);
     }
 
-  public void InitConsole(int consoleNum)
+    public void InitConsole(int consoleNum)
     {
         sendToConsole("i", consoleNum);
     }
 
- 
+#pragma warning disable 0618
 #pragma warning restore 0618
 }
