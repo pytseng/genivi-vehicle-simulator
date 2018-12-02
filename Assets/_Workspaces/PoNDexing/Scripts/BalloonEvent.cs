@@ -9,7 +9,7 @@ public class BalloonEvent : MonoBehaviour {
     void Start () {
         player_t = _GetTargetObeject().transform;
         balloon = Resources.Load("prefabs/balloon") as GameObject;
-        InvokeRepeating("BalloonFest", 2.0f, 10f);
+        InvokeRepeating("BalloonFest", 1.0f, 1f);
     }
 	
 	// Update is called once per frame
