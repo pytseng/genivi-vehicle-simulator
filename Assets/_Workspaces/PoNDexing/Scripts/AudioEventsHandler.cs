@@ -30,7 +30,6 @@ public class AudioEventsHandler : MonoBehaviour
     {
         eventHappened = false;
         player = _GetTargetObeject();
-        player.AddComponent<BalloonEvent>();
     }
 
     // Update is called once per frame
